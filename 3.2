@@ -1,0 +1,76 @@
+package com.example.demo.entity;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "employee")
+public class Employee {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+    private String department;
+    private double salary;
+
+    // Getters and Setters
+}
+package com.example.demo.dao;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import com.example.demo.entity.Employee;
+
+public interface EmployeeDAO extends JpaRepository<Employee, Long> {
+}
+package com.example.demo.service;
+
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import com.example.demo.dao.EmployeeDAO;
+import com.example.demo.entity.Employee;
+
+@Service
+public class EmployeeService {
+
+    @Autowired
+    private EmployeeDAO employeeDAO;
+
+    @Transactional
+    public Employee save(Employee employee) {
+        return employeeDAO.save(employee);
+    }
+
+    public List<Employee> findAll() {
+        return employeeDAO.findAll();
+    }
+
+    public Employee findById(Long id) {
+        return employeeDAO.findById(id).orElse(null);
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        employeeDAO.deleteById(id);
+    }
+}
+spring.datasource.url=jdbc:mysql://localhost:3306/spring_hibernate_demo
+spring.datasource.username=root
+spring.datasource.password=yourpassword
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
+package com.example.demo;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class DemoApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(DemoApplication.class, args);
+    }
+}
